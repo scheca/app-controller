@@ -37,15 +37,15 @@ static bool gStop = false;
 static std::vector<std::string> tokenize(const std::string& input);
 
 static void help(const std::string& args);
-static void exit(const std::string& args);
+static void quit(const std::string& args);
 
 int main()
 {
     cli::CliCmdTree commands;
 
     LOAD_CLI_CMD("help", "Help", &::help);
-    LOAD_CLI_CMD("quit", "Exit", (void(*)(const std::string&))&::exit);
-    LOAD_CLI_CMD("exit", "Exit", (void(*)(const std::string&))&::exit);
+    LOAD_CLI_CMD("quit", "Exit", &::quit);
+    LOAD_CLI_CMD("exit", "Exit", &::quit);
 
     std::string line;
 
@@ -91,7 +91,7 @@ void help(const std::string& args)
     std::cout << "Help" << std::endl;
 }
 
-void exit(const std::string& args)
+void quit(const std::string& args)
 {
     std::cout << "Bye!" << std::endl;
     gStop = true;
