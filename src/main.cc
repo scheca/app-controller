@@ -55,8 +55,12 @@ int main()
 
         if (!line.empty()) {
             auto tokens = tokenize(line);
-            for (auto const& completion : commands.execute(tokens[0]))
-                std::cout << tokens[0] << completion << std::endl;
+            const auto & completions = commands.execute(tokens[0]);
+            if (completions.size() == 1)
+                commands.execute(tokens[0] + completions[0]);
+            else
+                for (auto const& completion : completions)
+                    std::cout << tokens[0] << completion << std::endl;
         }
     }
 
