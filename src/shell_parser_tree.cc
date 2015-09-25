@@ -130,21 +130,25 @@ std::vector<std::string> CliCmdTree::execute(const std::string& cmdStr) const
 std::vector<std::string> CliCmdTree::autocomplete(CliCmdNode *root) const
 {
     std::vector<std::string> completions;
-    std::string command = "";
+    std::stack<std::string> lexemes;
     std::stack<CliCmdNode*> branch;
-    for (auto const& m : root->m_kids)
-        branch.push(m);
+
+    for (auto const& k : root->m_kids) {
+        branch.push(k);
+        lexemes.push(std::string(1, k->m_character));
+    }
+
     while (!branch.empty()) {
         CliCmdNode* n = branch.top();
         branch.pop();
-        command.push_back(n->m_character);
+        const auto lex = lexemes.top();
+        lexemes.pop();
+        for (auto const& k : n->m_kids) {
+            branch.push(k);
+            lexemes.push(lex + k->m_character);
+        }
         if (n->m_command)
-            completions.push_back(command);
-        if (!n->m_kids.empty())
-            for (auto const& m : n->m_kids)
-                branch.push(m);
-        else
-            command.clear();
+            completions.push_back(lex);
     }
 
     return completions;
